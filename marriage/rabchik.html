@@ -1,0 +1,583 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:linear-gradient(135deg,#1a0a0a,#2d0a1a,#1a0a0a);font-family:'Inter',system-ui,sans-serif;display:flex;justify-content:center;align-items:flex-start;padding:20px;min-height:100vh}
+  .phone{width:390px;background:#0a0a0a;border-radius:44px;padding:10px;box-shadow:0 30px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.1)}
+  .screen{background:#FFF8F0;border-radius:36px;overflow:hidden;height:800px;position:relative}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:130px;height:30px;background:#0a0a0a;border-radius:0 0 18px 18px;z-index:100}
+  .statusbar{height:48px;padding:0 20px;display:flex;align-items:flex-end;justify-content:space-between;font-size:11px;font-weight:600;color:#333;position:relative;z-index:50;padding-bottom:6px}
+
+  /* NAV SYSTEM */
+  input[type="radio"]{display:none}
+  .page{display:none;height:calc(100% - 48px - 60px);overflow-y:auto;scrollbar-width:none}
+  .page::-webkit-scrollbar{display:none}
+  #g-home:checked~.screen .p-home,
+  #g-schedule:checked~.screen .p-schedule,
+  #g-photos:checked~.screen .p-photos,
+  #g-games:checked~.screen .p-games,
+  #g-more:checked~.screen .p-more{display:block}
+
+  /* Sub pages */
+  #g-event:checked~.screen .p-home,#g-event:checked~.screen .p-schedule,#g-event:checked~.screen .p-photos,#g-event:checked~.screen .p-games,#g-event:checked~.screen .p-more{display:none}
+  #g-event:checked~.screen .p-event{display:block}
+  #g-menu:checked~.screen .p-home,#g-menu:checked~.screen .p-schedule,#g-menu:checked~.screen .p-photos,#g-menu:checked~.screen .p-games,#g-menu:checked~.screen .p-more{display:none}
+  #g-menu:checked~.screen .p-menu{display:block}
+  #g-wishes:checked~.screen .p-home,#g-wishes:checked~.screen .p-schedule,#g-wishes:checked~.screen .p-photos,#g-wishes:checked~.screen .p-games,#g-wishes:checked~.screen .p-more{display:none}
+  #g-wishes:checked~.screen .p-wishes{display:block}
+  #g-jukebox:checked~.screen .p-home,#g-jukebox:checked~.screen .p-schedule,#g-jukebox:checked~.screen .p-photos,#g-jukebox:checked~.screen .p-games,#g-jukebox:checked~.screen .p-more{display:none}
+  #g-jukebox:checked~.screen .p-jukebox{display:block}
+  #g-gift:checked~.screen .p-home,#g-gift:checked~.screen .p-schedule,#g-gift:checked~.screen .p-photos,#g-gift:checked~.screen .p-games,#g-gift:checked~.screen .p-more{display:none}
+  #g-gift:checked~.screen .p-gift{display:block}
+  #g-family:checked~.screen .p-home,#g-family:checked~.screen .p-schedule,#g-family:checked~.screen .p-photos,#g-family:checked~.screen .p-games,#g-family:checked~.screen .p-more{display:none}
+  #g-family:checked~.screen .p-family{display:block}
+  #g-story:checked~.screen .p-home,#g-story:checked~.screen .p-schedule,#g-story:checked~.screen .p-photos,#g-story:checked~.screen .p-games,#g-story:checked~.screen .p-more{display:none}
+  #g-story:checked~.screen .p-story{display:block}
+  #g-rsvp:checked~.screen .p-home,#g-rsvp:checked~.screen .p-schedule,#g-rsvp:checked~.screen .p-photos,#g-rsvp:checked~.screen .p-games,#g-rsvp:checked~.screen .p-more{display:none}
+  #g-rsvp:checked~.screen .p-rsvp{display:block}
+  #g-outfit:checked~.screen .p-home,#g-outfit:checked~.screen .p-schedule,#g-outfit:checked~.screen .p-photos,#g-outfit:checked~.screen .p-games,#g-outfit:checked~.screen .p-more{display:none}
+  #g-outfit:checked~.screen .p-outfit{display:block}
+  #g-live:checked~.screen .p-home,#g-live:checked~.screen .p-schedule,#g-live:checked~.screen .p-photos,#g-live:checked~.screen .p-games,#g-live:checked~.screen .p-more{display:none}
+  #g-live:checked~.screen .p-live{display:block}
+  #g-hunt:checked~.screen .p-home,#g-hunt:checked~.screen .p-schedule,#g-hunt:checked~.screen .p-photos,#g-hunt:checked~.screen .p-games,#g-hunt:checked~.screen .p-more{display:none}
+  #g-hunt:checked~.screen .p-hunt{display:block}
+
+  /* Bottom nav */
+  .bnav{position:absolute;bottom:0;left:0;right:0;height:60px;background:rgba(255,248,240,.97);backdrop-filter:blur(20px);display:flex;justify-content:space-around;align-items:center;border-top:1px solid #f0e0d6;z-index:90;border-radius:0 0 36px 36px}
+  .bnav label{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:6px 10px;border-radius:12px;transition:.2s}
+  .bnav label:hover{background:#FFF0E8}
+  .bnav label .ni{font-size:20px}.bnav label span{font-size:9px;color:#999;font-weight:600}
+  #g-home:checked~.screen .bnav .n-home,#g-schedule:checked~.screen .bnav .n-sched,
+  #g-photos:checked~.screen .bnav .n-photo,#g-games:checked~.screen .bnav .n-game,
+  #g-more:checked~.screen .bnav .n-more{background:linear-gradient(135deg,#800020,#B8002A);border-radius:14px}
+  #g-home:checked~.screen .bnav .n-home span,#g-schedule:checked~.screen .bnav .n-sched span,
+  #g-photos:checked~.screen .bnav .n-photo span,#g-games:checked~.screen .bnav .n-game span,
+  #g-more:checked~.screen .bnav .n-more span{color:#fff}
+
+  /* Shared */
+  .sec{font-family:'Playfair Display',serif;font-size:17px;color:#2a0a0a;margin:14px 16px 8px;font-weight:700}
+  .card{background:#fff;border-radius:14px;margin:6px 16px;padding:12px;box-shadow:0 2px 10px rgba(128,0,32,.05);border:1px solid rgba(128,0,32,.04)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border-radius:12px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:.2s}
+  .btn-p{background:linear-gradient(135deg,#800020,#B8002A);color:#fff}
+  .btn-p:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(128,0,32,.3)}
+  .btn-g{background:linear-gradient(135deg,#D4AF37,#F4CF47);color:#2a0a0a}
+  .btn-o{background:transparent;border:1.5px solid #800020;color:#800020}
+  .back{cursor:pointer;font-size:12px;color:#800020;font-weight:600;padding:8px 16px;display:inline-flex;align-items:center;gap:4px}
+  .pill{display:inline-block;padding:3px 8px;border-radius:16px;font-size:9px;font-weight:700}
+
+  /* Hero */
+  .hero{background:linear-gradient(135deg,#800020,#4a0012);padding:18px 18px 22px;color:#fff;position:relative;overflow:hidden}
+  .hero::after{content:'✦';position:absolute;top:8px;right:16px;font-size:50px;opacity:.08;color:#D4AF37}
+  .cname{font-family:'Playfair Display',serif;font-size:26px;font-weight:700}
+  .camp{color:#D4AF37;margin:0 5px;font-size:22px}
+  .wdate{font-size:12px;opacity:.85;margin-top:3px}
+  .cdown{display:flex;gap:10px;margin-top:10px}
+  .cd-item{background:rgba(255,255,255,.12);border-radius:10px;padding:7px 14px;text-align:center;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08)}
+  .cd-num{font-size:20px;font-weight:700;font-family:'Playfair Display',serif;color:#D4AF37}
+  .cd-lbl{font-size:8px;text-transform:uppercase;letter-spacing:1px;opacity:.8}
+
+  .live-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#D4AF37,#f0c040);color:#2a0a0a;padding:4px 10px;border-radius:16px;font-size:10px;font-weight:700;margin:10px 16px 0}
+  .pulse{width:6px;height:6px;background:#15803d;border-radius:50%;animation:p 1.5s infinite}
+  @keyframes p{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+
+  /* Event cards scroll */
+  .escroll{display:flex;gap:8px;padding:6px 16px;overflow-x:auto;scrollbar-width:none}
+  .escroll::-webkit-scrollbar{display:none}
+  .ecard{min-width:140px;background:#fff;border-radius:14px;padding:12px;box-shadow:0 2px 12px rgba(128,0,32,.06);cursor:pointer;transition:.2s;border:1px solid rgba(128,0,32,.04)}
+  .ecard:hover{transform:translateY(-2px);box-shadow:0 5px 18px rgba(128,0,32,.1)}
+  .ec-icon{font-size:26px;margin-bottom:4px}
+  .ec-name{font-weight:700;font-size:12px;color:#2a0a0a}
+  .ec-time{font-size:10px;color:#888;margin-top:1px}
+  .ec-venue{font-size:9px;color:#B8002A;margin-top:3px;font-weight:500}
+  .ec-bar{width:100%;height:3px;border-radius:2px;margin-top:6px}
+
+  /* Quick actions */
+  .qa{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:0 16px;margin-top:4px}
+  .qa label,.qa-item{background:#fff;border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;transition:.2s;border:1px solid rgba(128,0,32,.04);display:block}
+  .qa label:hover,.qa-item:hover{background:#FFF0E8;transform:translateY(-1px)}
+  .qa-i{font-size:20px}
+  .qa-l{font-size:8px;color:#666;margin-top:3px;font-weight:600;display:block}
+
+  /* Timeline */
+  .dtabs{display:flex;gap:5px;padding:10px 16px;overflow-x:auto;scrollbar-width:none}
+  .dtabs::-webkit-scrollbar{display:none}
+  .dtab{padding:7px 14px;border-radius:18px;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer;background:#fff;color:#666;border:1px solid #eee}
+  .dtab.on{background:linear-gradient(135deg,#800020,#B8002A);color:#fff;border-color:transparent}
+  .tl{padding:0 16px 16px;position:relative}
+  .tl::before{content:'';position:absolute;left:34px;top:0;bottom:0;width:2px;background:linear-gradient(#D4AF37,#800020,#D4AF37)}
+  .tl-i{display:flex;gap:12px;margin-bottom:12px;position:relative}
+  .tl-t{width:38px;text-align:center;font-size:9px;font-weight:700;color:#800020;padding-top:10px;flex-shrink:0}
+  .tl-d{width:10px;height:10px;border-radius:50%;background:#D4AF37;border:2px solid #fff;box-shadow:0 0 0 2px #D4AF37;flex-shrink:0;margin-top:12px;z-index:2}
+  .tl-d.now{background:#15803d;box-shadow:0 0 0 2px #15803d,0 0 10px rgba(21,128,61,.4);animation:p 1.5s infinite}
+  .tl-c{flex:1;background:#fff;border-radius:12px;padding:10px;box-shadow:0 2px 8px rgba(0,0,0,.03);border-left:3px solid #D4AF37;cursor:pointer;transition:.2s}
+  .tl-c:hover{transform:translateX(3px)}
+  .tl-c.now-c{border-left-color:#15803d;background:#f0fff4}
+  .tl-en{font-weight:700;font-size:12px;color:#2a0a0a}
+  .tl-el{font-size:10px;color:#888;margin-top:1px}
+  .tl-dr{display:inline-flex;align-items:center;gap:3px;margin-top:4px;font-size:9px;color:#666;background:#f8f4f0;padding:2px 7px;border-radius:6px}
+  .cdot{width:8px;height:8px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.1)}
+  .now-b{background:linear-gradient(135deg,#15803d,#22c55e);color:#fff;margin:0 16px 8px;padding:8px 12px;border-radius:10px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:6px}
+
+  /* Albums */
+  .agrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px 16px}
+  .acard{border-radius:14px;overflow:hidden;cursor:pointer;transition:.2s;box-shadow:0 2px 10px rgba(0,0,0,.06);position:relative}
+  .acard:hover{transform:scale(1.02)}
+  .athumb{height:90px;display:flex;align-items:center;justify-content:center;font-size:34px}
+  .ainfo{padding:8px 10px;background:#fff}
+  .aname{font-weight:700;font-size:12px;color:#2a0a0a}
+  .acount{font-size:10px;color:#888;margin-top:1px}
+  .abadge{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.5);color:#fff;font-size:8px;padding:2px 7px;border-radius:8px;font-weight:600}
+
+  /* Bingo */
+  .bgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;padding:0 16px}
+  .bcell{aspect-ratio:1;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:7.5px;padding:2px;color:#444;font-weight:500;border:1px solid #eee;cursor:pointer;transition:.15s;line-height:1.2}
+  .bcell:hover{background:#FFF0E8}
+  .bcell.m{background:linear-gradient(135deg,#800020,#B8002A);color:#fff;border-color:transparent}
+  .bcell.f{background:linear-gradient(135deg,#D4AF37,#F4CF47);color:#2a0a0a;font-weight:700;border-color:transparent}
+
+  /* Trivia */
+  .tcard{background:#fff;border-radius:14px;margin:0 16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+  .tq{font-family:'Playfair Display',serif;font-size:15px;color:#2a0a0a;text-align:center;margin-bottom:14px;line-height:1.4}
+  .topt{padding:10px;border:1.5px solid #eee;border-radius:10px;margin-bottom:6px;font-size:12px;color:#333;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:8px}
+  .topt:hover{border-color:#800020;background:#FFF8F4}
+  .tlet{width:24px;height:24px;border-radius:50%;background:#f5f0eb;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#800020;flex-shrink:0}
+  .tbar{height:3px;background:#f0e0d6;border-radius:2px;margin:10px 16px;overflow:hidden}
+  .tfill{height:100%;width:60%;background:linear-gradient(90deg,#D4AF37,#800020);border-radius:2px}
+
+  /* Jukebox */
+  .jhead{background:linear-gradient(135deg,#1a0050,#2d0080);padding:18px;text-align:center;color:#fff}
+  .jico{font-size:36px;margin-bottom:4px}
+  .jtitle{font-family:'Playfair Display',serif;font-size:20px;font-weight:700}
+  .scard{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #f5f0eb;cursor:pointer;transition:.15s}
+  .scard:hover{background:#FFF8F4}
+  .srank{font-size:13px;font-weight:700;color:#D4AF37;width:22px;text-align:center}
+  .sinfo{flex:1}
+  .sname{font-size:12px;font-weight:600;color:#2a0a0a}
+  .sartist{font-size:10px;color:#888}
+  .svote{background:#f5f0eb;padding:5px 9px;border-radius:8px;font-size:10px;font-weight:700;color:#800020;display:flex;align-items:center;gap:3px;cursor:pointer}
+  .svote:hover{background:#800020;color:#fff}
+
+  /* Wishes */
+  .wcard{background:#fff;border-radius:12px;margin:6px 16px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,.03)}
+  .whdr{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .wav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff}
+  .wn{font-size:12px;font-weight:600;color:#2a0a0a}
+  .wty{font-size:9px;color:#888}
+  .wtxt{font-size:11px;color:#444;line-height:1.5;font-style:italic}
+  .waudio{background:#f5f0eb;border-radius:8px;padding:8px;display:flex;align-items:center;gap:8px;font-size:11px;color:#666}
+  .wavebar{flex:1;height:20px;display:flex;align-items:end;gap:1.5px}
+  .wbar{width:2.5px;background:#800020;border-radius:1px}
+
+  /* Menu */
+  .mhead{background:linear-gradient(135deg,#2a0a0a,#4a0012);padding:16px;color:#fff;text-align:center}
+  .mtime{background:rgba(212,175,55,.2);border:1px solid rgba(212,175,55,.3);border-radius:8px;padding:6px;margin-top:8px;font-size:11px;color:#D4AF37}
+  .mfilters{display:flex;gap:5px;padding:10px 16px;flex-wrap:wrap}
+  .mf{padding:5px 10px;border-radius:16px;font-size:10px;font-weight:600;border:1px solid #eee;background:#fff;color:#666;cursor:pointer}
+  .mf.on{background:#15803d;color:#fff;border-color:transparent}
+  .mcat{padding:0 16px;margin-bottom:10px}
+  .mct{font-weight:700;font-size:13px;color:#2a0a0a;display:flex;align-items:center;gap:5px;margin-bottom:4px}
+  .mi{font-size:11px;color:#555;padding:4px 0;border-bottom:1px solid #f8f4f0;display:flex;align-items:center;gap:6px}
+  .vdot{width:12px;height:12px;border:1.5px solid #15803d;border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .vdot::after{content:'';width:6px;height:6px;border-radius:50%;background:#15803d}
+  .ndot{width:12px;height:12px;border:1.5px solid #dc2626;border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .ndot::after{content:'';width:0;height:0;border-left:3px solid transparent;border-right:3px solid transparent;border-bottom:6px solid #dc2626}
+  .snote{background:linear-gradient(135deg,#FFF8E7,#FFF0D0);border:1px solid #D4AF37;border-radius:8px;padding:8px;margin:6px 16px;font-size:10px;color:#7a6520;font-weight:500}
+
+  /* Gift */
+  .ghead{background:linear-gradient(135deg,#800020,#D4AF37);padding:18px;color:#fff;text-align:center}
+  .gitem{display:flex;gap:10px;padding:10px 16px;border-bottom:1px solid #f5f0eb;align-items:center}
+  .gemo{font-size:28px}
+  .ginfo{flex:1}
+  .gn{font-size:12px;font-weight:600;color:#2a0a0a}
+  .gp{font-size:11px;color:#800020;font-weight:700}
+  .gprog{height:3px;background:#f0e0d6;border-radius:2px;margin-top:3px;overflow:hidden}
+  .gpfill{height:100%;background:linear-gradient(90deg,#D4AF37,#800020);border-radius:2px}
+  .gs{font-size:9px;color:#888;margin-top:1px}
+  .shagun-box{text-align:center;padding:16px}
+  .sh-icon{font-size:50px}
+  .sh-amts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:0 16px;margin-top:10px}
+  .sh-a{padding:10px;background:#fff;border-radius:10px;text-align:center;font-weight:700;font-size:13px;color:#800020;cursor:pointer;border:2px solid #f0e0d6;transition:.15s}
+  .sh-a:hover{border-color:#800020;background:#FFF8F4}
+
+  /* Family */
+  .fmem{display:flex;gap:10px;padding:10px 16px;border-bottom:1px solid #f5f0eb;align-items:center;cursor:pointer;transition:.15s}
+  .fmem:hover{background:#FFF8F4}
+  .fav{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:700;flex-shrink:0}
+  .fn{font-size:13px;font-weight:600;color:#2a0a0a}
+  .fr{font-size:10px;color:#800020;font-weight:500}
+  .ff{font-size:10px;color:#888;font-style:italic}
+  .fside{font-size:8px;padding:2px 7px;border-radius:8px;font-weight:600;margin-left:auto;flex-shrink:0}
+
+  /* Story */
+  .sthead{background:linear-gradient(135deg,#800020,#D4AF37);padding:22px 18px;color:#fff;text-align:center}
+  .sttitle{font-family:'Playfair Display',serif;font-size:22px;font-weight:700}
+  .stl{padding:14px 16px;position:relative}
+  .stl::before{content:'';position:absolute;left:28px;top:0;bottom:0;width:2px;background:linear-gradient(#D4AF37,#800020)}
+  .sti{display:flex;gap:12px;margin-bottom:14px;position:relative}
+  .sty{width:40px;font-size:10px;font-weight:700;color:#D4AF37;text-align:center;padding-top:8px;flex-shrink:0;z-index:2;background:#FFF8F0}
+  .stc{flex:1;background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,.03);border-left:3px solid #D4AF37}
+  .stem{font-size:24px;margin-bottom:4px}
+  .stm{font-weight:700;font-size:13px;color:#2a0a0a}
+  .std{font-size:11px;color:#666;line-height:1.4;margin-top:3px}
+
+  /* RSVP */
+  .rcard{background:#fff;border-radius:12px;margin:6px 16px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,.03);display:flex;align-items:center;gap:10px}
+  .remo{font-size:24px}
+  .rinfo{flex:1}
+  .ren{font-size:12px;font-weight:600;color:#2a0a0a}
+  .red{font-size:10px;color:#888}
+  .rtog{padding:5px 10px;border-radius:16px;font-size:10px;font-weight:700}
+  .ry{background:#dcfce7;color:#15803d}
+  .rp{background:#fef3c7;color:#92400e}
+
+  /* Outfit */
+  .ocard{background:#fff;border-radius:12px;margin:6px 16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.03)}
+  .oprev{height:80px;display:flex;align-items:center;justify-content:center;font-size:36px}
+  .oinfo{padding:10px}
+  .oev{font-size:9px;color:#800020;font-weight:600;text-transform:uppercase}
+  .od{font-size:12px;font-weight:600;color:#2a0a0a;margin-top:1px}
+  .ol{font-size:10px;color:#888;margin-top:2px}
+  .oalert{background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:8px;margin:6px 16px;font-size:10px;color:#92400e;font-weight:500}
+
+  /* Live Feed */
+  .lfhead{background:linear-gradient(135deg,#dc2626,#800020);padding:10px 16px;display:flex;align-items:center;gap:6px;color:#fff;font-size:13px;font-weight:700}
+  .ldot{width:7px;height:7px;background:#fff;border-radius:50%;animation:p 1s infinite}
+  .fitem{padding:10px 16px;border-bottom:1px solid #f5f0eb}
+  .fhdr{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+  .fava{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:700}
+  .fname{font-size:11px;font-weight:600;color:#2a0a0a}
+  .ftime{font-size:9px;color:#aaa;margin-left:auto}
+  .ftxt{font-size:11px;color:#444;line-height:1.3}
+  .fimg{height:90px;border-radius:10px;margin-top:6px;display:flex;align-items:center;justify-content:center;font-size:32px}
+  .freact{display:flex;gap:10px;margin-top:6px;font-size:11px;color:#888}
+
+  /* Hunt */
+  .hmap{height:180px;background:linear-gradient(135deg,#FFF8E7,#f5e6d0);position:relative;overflow:hidden;margin:0 16px;border-radius:14px}
+  .hcp{position:absolute;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px}
+  .hfound{background:#dcfce7;border:2px solid #15803d}
+  .hlocked{background:#f5f0eb;border:2px solid #ccc}
+  .hprog{display:flex;gap:5px;padding:10px 16px;justify-content:center}
+  .hstep{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;border:2px solid #eee;background:#fff}
+  .hstep.done{border-color:#15803d;background:#dcfce7}
+
+  /* More grid */
+  .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 16px}
+  .mitem{background:#fff;border-radius:14px;padding:14px;text-align:center;cursor:pointer;transition:.2s;box-shadow:0 2px 8px rgba(0,0,0,.03);border:1px solid rgba(128,0,32,.04)}
+  .mitem:hover{transform:translateY(-2px);box-shadow:0 5px 16px rgba(128,0,32,.08)}
+  .mi-i{font-size:26px;margin-bottom:4px}
+  .mi-l{font-size:11px;font-weight:600;color:#2a0a0a}
+  .mi-d{font-size:9px;color:#888;margin-top:1px}
+
+  /* Event detail */
+  .ehero{height:140px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+  .ehero::before{content:'🎵';font-size:70px;opacity:.15;position:absolute}
+  .ehtitle{font-family:'Playfair Display',serif;font-size:24px;color:#fff;font-weight:700;z-index:2;text-shadow:0 2px 8px rgba(0,0,0,.3)}
+  .dsec{padding:10px 16px}
+  .dlbl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#888;font-weight:700;margin-bottom:4px}
+  .drow{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+  .dico{font-size:14px;width:18px;text-align:center}
+  .dtxt{font-size:12px;color:#333}
+  .dcolors{display:flex;gap:5px;margin-top:4px}
+  .dsw{width:28px;height:28px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+  .dswl{font-size:8px;color:#666;text-align:center;margin-top:2px}
+</style>
+</head>
+<body>
+<div class="phone">
+  <!-- Nav radios -->
+  <input type="radio" name="gnav" id="g-home" checked>
+  <input type="radio" name="gnav" id="g-schedule">
+  <input type="radio" name="gnav" id="g-photos">
+  <input type="radio" name="gnav" id="g-games">
+  <input type="radio" name="gnav" id="g-more">
+  <input type="radio" name="gnav" id="g-event">
+  <input type="radio" name="gnav" id="g-menu">
+  <input type="radio" name="gnav" id="g-wishes">
+  <input type="radio" name="gnav" id="g-jukebox">
+  <input type="radio" name="gnav" id="g-gift">
+  <input type="radio" name="gnav" id="g-family">
+  <input type="radio" name="gnav" id="g-story">
+  <input type="radio" name="gnav" id="g-rsvp">
+  <input type="radio" name="gnav" id="g-outfit">
+  <input type="radio" name="gnav" id="g-live">
+  <input type="radio" name="gnav" id="g-hunt">
+
+  <div class="screen">
+    <div class="notch"></div>
+    <div class="statusbar"><span>9:41</span><span>📶 🔋</span></div>
+
+    <!-- ========== HOME ========== -->
+    <div class="page p-home">
+      <div class="hero">
+        <div class="cname">Saurabh <span class="camp">&</span> Priya</div>
+        <div class="wdate">December 14, 2026 • New Delhi</div>
+        <div class="cdown">
+          <div class="cd-item"><div class="cd-num">93</div><div class="cd-lbl">Days</div></div>
+          <div class="cd-item"><div class="cd-num">14</div><div class="cd-lbl">Hours</div></div>
+          <div class="cd-item"><div class="cd-num">27</div><div class="cd-lbl">Mins</div></div>
+          <div class="cd-item"><div class="cd-num">03</div><div class="cd-lbl">Secs</div></div>
+        </div>
+      </div>
+      <div class="live-badge"><div class="pulse"></div> Happening Now: Mehendi Ceremony — Starts in 2 hours</div>
+      <div class="sec">Today's Events</div>
+      <div class="escroll">
+        <label for="g-event" class="ecard">
+          <div class="ec-icon">💅</div>
+          <div class="ec-name">Mehendi</div>
+          <div class="ec-time">4:00 PM – 8:00 PM</div>
+          <div class="ec-venue">📍 Poolside, Taj Palace</div>
+          <div class="ec-bar" style="background:linear-gradient(90deg,#15803d,#22c55e)"></div>
+        </label>
+        <label for="g-event" class="ecard">
+          <div class="ec-icon">🎵</div>
+          <div class="ec-name">Sangeet Night</div>
+          <div class="ec-time">7:00 PM – 12:00 AM</div>
+          <div class="ec-venue">📍 Grand Ballroom</div>
+          <div class="ec-bar" style="background:linear-gradient(90deg,#1a0050,#4a0080)"></div>
+        </label>
+        <label for="g-event" class="ecard">
+          <div class="ec-icon">☀️</div>
+          <div class="ec-name">Haldi</div>
+          <div class="ec-time">Tomorrow, 10 AM</div>
+          <div class="ec-venue">📍 Garden Lawn</div>
+          <div class="ec-bar" style="background:linear-gradient(90deg,#D4AF37,#F4CF47)"></div>
+        </label>
+        <label for="g-event" class="ecard">
+          <div class="ec-icon">💍</div>
+          <div class="ec-name">Wedding</div>
+          <div class="ec-time">Dec 14, 9:00 AM</div>
+          <div class="ec-venue">📍 Grand Mandap</div>
+          <div class="ec-bar" style="background:linear-gradient(90deg,#800020,#D4AF37)"></div>
+        </label>
+      </div>
+      <div class="sec">Quick Actions</div>
+      <div class="qa">
+        <label for="g-rsvp"><div class="qa-i">📩</div><span class="qa-l">RSVP</span></label>
+        <label for="g-menu"><div class="qa-i">🍽️</div><span class="qa-l">Menu</span></label>
+        <label for="g-gift"><div class="qa-i">🎁</div><span class="qa-l">Gifts</span></label>
+        <label for="g-family"><div class="qa-i">👨‍👩‍👧‍👦</div><span class="qa-l">Who's Who</span></label>
+      </div>
+      <div class="sec">Explore</div>
+      <div class="qa">
+        <label for="g-story"><div class="qa-i">💕</div><span class="qa-l">Our Story</span></label>
+        <label for="g-jukebox"><div class="qa-i">🎵</div><span class="qa-l">Jukebox</span></label>
+        <label for="g-wishes"><div class="qa-i">💌</div><span class="qa-l">Wishes</span></label>
+        <label for="g-live"><div class="qa-i">📡</div><span class="qa-l">Live Feed</span></label>
+      </div>
+      <div style="height:16px"></div>
+    </div>
+
+    <!-- ========== EVENT DETAIL ========== -->
+    <div class="page p-event">
+      <div class="ehero" style="background:linear-gradient(135deg,#1a0050,#4a0080,#800060)">
+        <div class="ehtitle">Sangeet Night 🎵</div>
+      </div>
+      <label for="g-home" class="back">← Back</label>
+      <div class="dsec">
+        <div class="dlbl">Date & Time</div>
+        <div class="drow"><span class="dico">📅</span><span class="dtxt">Saturday, Dec 13 • 7:00 PM – 12:00 AM</span></div>
+      </div>
+      <div class="dsec">
+        <div class="dlbl">Venue</div>
+        <div class="drow"><span class="dico">📍</span><span class="dtxt">Grand Ballroom, Taj Palace Hotel</span></div>
+        <div class="drow"><span class="dico">🅿️</span><span class="dtxt" style="font-size:10px;color:#888">Valet parking at Gate 2. Enter via East Wing lobby.</span></div>
+        <div style="margin-top:6px;height:80px;background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#333;position:relative">
+          <div style="position:absolute;width:20px;height:20px;background:#dc2626;border-radius:50% 50% 50% 0;transform:rotate(-45deg)"></div>
+          <span style="position:absolute;bottom:5px;left:8px;background:rgba(0,0,0,.6);color:#fff;padding:2px 6px;border-radius:4px;font-size:8px">📍 Taj Palace Hotel</span>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <span class="btn btn-p" style="flex:1;font-size:10px;padding:8px">📍 Get Directions</span>
+          <span class="btn btn-o" style="flex:1;font-size:10px;padding:8px">🚕 Book Cab</span>
+        </div>
+      </div>
+      <div class="dsec">
+        <div class="dlbl">Dress Code</div>
+        <div style="font-size:11px;color:#444">Semi-formal / Indo-Western</div>
+        <div class="dcolors">
+          <div style="text-align:center"><div class="dsw" style="background:#1e3a8a"></div><div class="dswl">Royal Blue</div></div>
+          <div style="text-align:center"><div class="dsw" style="background:#D4AF37"></div><div class="dswl">Gold</div></div>
+          <div style="text-align:center"><div class="dsw" style="background:#94a3b8"></div><div class="dswl">Silver</div></div>
+        </div>
+      </div>
+      <div class="dsec">
+        <div class="dlbl">What to Expect</div>
+        <div style="font-size:11px;color:#444;line-height:1.5">An evening of dance performances, live music, and celebration. 6 choreographed performances followed by open dance floor. DJ starts at 10 PM!</div>
+      </div>
+      <div class="dsec">
+        <div class="dlbl">What to Prepare</div>
+        <div style="font-size:11px;color:#444;line-height:1.5">🩰 Comfortable shoes (you WILL dance!)<br>🎤 Surprise group dance at 10 PM<br>📱 Vote for songs on the Jukebox!</div>
+      </div>
+      <div style="padding:10px 16px;display:flex;gap:8px">
+        <span class="btn btn-p" style="flex:1">I'm Coming! 🎉</span>
+        <label for="g-menu" class="btn btn-g" style="flex:1;text-decoration:none">View Menu 🍽️</label>
+      </div>
+      <div style="height:10px"></div>
+    </div>
+
+    <!-- ========== MENU ========== -->
+    <div class="page p-menu">
+      <div class="mhead">
+        <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700">🍽️ Wedding Dinner</div>
+        <div class="mtime">🕐 Dinner: 8:30 PM – 11:00 PM</div>
+      </div>
+      <label for="g-home" class="back">← Back to Home</label>
+      <div class="mfilters">
+        <span class="mf on">🌿 Veg</span>
+        <span class="mf">🍗 Non-Veg</span>
+        <span class="mf">🙏 Jain</span>
+        <span class="mf">🌱 Vegan</span>
+      </div>
+      <div class="mcat">
+        <div class="mct">🥗 Starters</div>
+        <div class="mi"><div class="vdot"></div> Paneer Tikka</div>
+        <div class="mi"><div class="vdot"></div> Hara Bhara Kebab</div>
+        <div class="mi"><div class="vdot"></div> Dahi Ke Kebab</div>
+        <div class="mi"><div class="ndot"></div> Galouti Kebab</div>
+        <div class="mi"><div class="ndot"></div> Tandoori Prawns</div>
+      </div>
+      <div class="mcat">
+        <div class="mct">🍛 Main Course</div>
+        <div class="mi"><div class="vdot"></div> Dal Makhani</div>
+        <div class="mi"><div class="vdot"></div> Paneer Lababdar</div>
+        <div class="mi"><div class="vdot"></div> Malai Kofta</div>
+        <div class="mi"><div class="ndot"></div> Butter Chicken</div>
+        <div class="mi"><div class="ndot"></div> Mutton Rogan Josh</div>
+      </div>
+      <div class="mcat">
+        <div class="mct">🍞 Breads & Rice</div>
+        <div class="mi"><div class="vdot"></div> Naan, Laccha Paratha, Roomali Roti</div>
+        <div class="mi"><div class="vdot"></div> Hyderabadi Veg Biryani</div>
+        <div class="mi"><div class="ndot"></div> Lucknowi Chicken Biryani</div>
+      </div>
+      <div class="mcat">
+        <div class="mct">🍨 Desserts</div>
+        <div class="mi"><div class="vdot"></div> Gulab Jamun</div>
+        <div class="mi"><div class="vdot"></div> Rabri with Malpua</div>
+        <div class="mi"><div class="vdot"></div> 🔥 Live Jalebi Counter</div>
+        <div class="mi"><div class="vdot"></div> Kulfi & Ice Cream</div>
+      </div>
+      <div class="mcat">
+        <div class="mct">🥤 Beverages</div>
+        <div class="mi"><div class="vdot"></div> Masala Chaas, Thandai, Fresh Juices, Paan Shots</div>
+      </div>
+      <div class="snote">⭐ Live Chaat Counter closes at 10 PM — Don't miss it!</div>
+      <div style="height:16px"></div>
+    </div>
+
+    <!-- ========== SCHEDULE ========== -->
+    <div class="page p-schedule">
+      <div class="sec" style="margin-top:8px">📅 Wedding Schedule</div>
+      <div class="dtabs">
+        <span class="dtab on">Day 1 · Dec 11</span>
+        <span class="dtab">Day 2 · Dec 12</span>
+        <span class="dtab">Day 3 · Dec 13</span>
+        <span class="dtab">Day 4 · Dec 14</span>
+      </div>
+      <div class="now-b"><div class="pulse"></div> Mehendi is happening now!</div>
+      <div class="tl">
+        <div class="tl-i"><div class="tl-t">10 AM</div><div class="tl-d"></div>
+          <label for="g-event" class="tl-c"><div class="tl-en">☀️ Haldi Ceremony</div><div class="tl-el">Garden Lawn, Taj Palace</div>
+            <div class="tl-dr"><span class="cdot" style="background:#F4CF47"></span> Yellow dress code</div></label></div>
+        <div class="tl-i"><div class="tl-t">1 PM</div><div class="tl-d"></div>
+          <div class="tl-c"><div class="tl-en">🍽️ Lunch Break</div><div class="tl-el">Main Dining Hall</div></div></div>
+        <div class="tl-i"><div class="tl-t">4 PM</div><div class="tl-d now"></div>
+          <label for="g-event" class="tl-c now-c"><div class="tl-en">💅 Mehendi Ceremony</div><div class="tl-el">Poolside Area — NOW</div>
+            <div class="tl-dr"><span class="cdot" style="background:#15803d"></span> Green / Floral</div></label></div>
+        <div class="tl-i"><div class="tl-t">7 PM</div><div class="tl-d"></div>
+          <label for="g-event" class="tl-c"><div class="tl-en">🎵 Sangeet Night</div><div class="tl-el">Grand Ballroom</div>
+            <div class="tl-dr"><span class="cdot" style="background:#1e3a8a"></span> Royal Blue / Gold</div></label></div>
+        <div class="tl-i"><div class="tl-t">9 PM</div><div class="tl-d"></div>
+          <label for="g-event" class="tl-c"><div class="tl-en">🍷 Cocktail & DJ Night</div><div class="tl-el">Rooftop Lounge</div>
+            <div class="tl-dr"><span class="cdot" style="background:#000"></span> Black tie optional</div></label></div>
+      </div>
+      <div style="padding:6px 16px">
+        <div style="background:#f5f0eb;border-radius:10px;padding:8px;font-size:10px;color:#666;display:flex;align-items:center;gap:6px">
+          🌤️ <strong>Weather:</strong>&nbsp;28°C Clear skies — Perfect for outdoor events!
+        </div>
+      </div>
+      <div style="height:10px"></div>
+    </div>
+
+    <!-- ========== PHOTOS ========== -->
+    <div class="page p-photos">
+      <div class="sec" style="margin-top:8px">📸 Photo Albums</div>
+      <div style="padding:0 16px 8px;font-size:11px;color:#888">847 photos across 4 events</div>
+      <div class="agrid">
+        <div class="acard">
+          <div class="athumb" style="background:linear-gradient(135deg,#15803d,#86efac)">💅</div>
+          <div class="ainfo"><div class="aname">Mehendi</div><div class="acount">142 photos</div></div>
+          <div class="abadge">+12 new</div>
+        </div>
+        <div class="acard">
+          <div class="athumb" style="background:linear-gradient(135deg,#1e3a8a,#818cf8)">🎵</div>
+          <div class="ainfo"><div class="aname">Sangeet</div><div class="acount">203 photos</div></div>
+        </div>
+        <div class="acard">
+          <div class="athumb" style="background:linear-gradient(135deg,#D4AF37,#FDE68A)">☀️</div>
+          <div class="ainfo"><div class="aname">Haldi</div><div class="acount">167 photos</div></div>
+        </div>
+        <div class="acard">
+          <div class="athumb" style="background:linear-gradient(135deg,#800020,#D4AF37)">💍</div>
+          <div class="ainfo"><div class="aname">Wedding</div><div class="acount">335 photos</div></div>
+        </div>
+      </div>
+      <div class="sec">📌 Best Moments</div>
+      <div style="display:flex;gap:3px;padding:0 16px">
+        <div style="flex:1;aspect-ratio:1;border-radius:8px;background:linear-gradient(135deg,#FDE68A,#D4AF37);display:flex;align-items:center;justify-content:center;font-size:28px">🤩</div>
+        <div style="flex:1;aspect-ratio:1;border-radius:8px;background:linear-gradient(135deg,#818cf8,#1e3a8a);display:flex;align-items:center;justify-content:center;font-size:28px">💃</div>
+        <div style="flex:1;aspect-ratio:1;border-radius:8px;background:linear-gradient(135deg,#86efac,#15803d);display:flex;align-items:center;justify-content:center;font-size:28px">😂</div>
+        <div style="flex:1;aspect-ratio:1;border-radius:8px;background:linear-gradient(135deg,#fca5a5,#dc2626);display:flex;align-items:center;justify-content:center;font-size:28px">❤️</div>
+      </div>
+      <div style="padding:12px 16px"><span class="btn btn-p" style="width:100%;text-align:center">📤 Upload Your Photos</span></div>
+      <div class="sec">Recent Uploads</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;padding:0 16px">
+        <div style="aspect-ratio:1;border-radius:6px;background:linear-gradient(135deg,#fef3c7,#D4AF37);display:flex;align-items:center;justify-content:center;font-size:20px">📷</div>
+        <div style="aspect-ratio:1;border-radius:6px;background:linear-gradient(135deg,#e0e7ff,#818cf8);display:flex;align-items:center;justify-content:center;font-size:20px">🎭</div>
+        <div style="aspect-ratio:1;border-radius:6px;background:linear-gradient(135deg,#fce7f3,#ec4899);display:flex;align-items:center;justify-content:center;font-size:20px">🌸</div>
+        <div style="aspect-ratio:1;border-radius:6px;background:linear-gradient(135deg,#d1fae5,#34d399);display:flex;align-items:center;justify-content:center;font-size:20px">🎉</div>
+        <div style="aspect-ratio:1;border-radius:6px;background:linear-gradient(135deg,#fed7aa,#f97316);display:flex;align-items:center;justify-content:center;font-size:20px">🥳</div>
+        <div style="aspect-ratio:1;border-radius:6px;background:linear-gradient(135deg,#fecaca,#ef4444);display:flex;align-items:center;justify-content:center;font-size:20px">💐</div>
+      </div>
+      <div style="height:16px"></div>
+    </div>
+
+    <!-- ========== GAMES ========== -->
+    <div class="page p-games">
+      <div class="sec" style="margin-top:8px">🎮 Games & Fun</div>
+      <div style="padding:0 16px 8px;font-size:11px;color:#888">Earn points and become the Wedding MVP!</div>
+      <div class="sec" style="font-size:14px">🎯 Wedding Bingo</div>
+      <div class="bgrid">
+        <div class="bcell m">Someone cried 😢</div>
+        <div class="bcell">Uncle dances first</div>
+        <div class="bcell m">Kids stole sweets</div>
+        <div class="bcell">"When's your turn?"</div>
+        <div class="bcell">Same outfit alert</div>
+        <div class="bcell">Shoe stolen 👠</div>
+        <div class="bcell m">London Thumakda plays</div>
+        <div class="bcell">Photo-bomber spotted</div>
+        <div class="bcell">Late arrival</div>
+        <div class="bcell m">Emotional speech</div>
+        <div class="bcell">Selfie with couple</div>
+        <div class="bcell">Aunty gossip circle</div>
+        <div class="bcell f">FREE ⭐</div>
+        <div class="bcell">Food coma</div>
+        <div class="bcell m">Photographer says "one more!"</div>
+        <div class="bcell">Bride cried</div>
+        <div class="bcell">Baraat dancing</div>
+        <div class="bcell m">Bouquet toss catch</div>
+        <div class="bcell">DJ too loud</div>
+        <div class="bcell">Baby on dance floor</div>
+        <div class="bcell">Outfit change</div>
+        <div class="bcell m">Best man speech</div>
+        <div class="bcell">Fireworks!</div>
+        <div class="bcell">Pandit check phone</div>
+        <div class="bcell m">Vidaai tears</div>
+      </div>
+      <div style="padding:8px 16px;display:flex;align-items:center;gap:6px">
+        <div style="flex:1;height:6px;background:#f0e0d6;border-radius:3px;overflow:hidden">
+          <div style="width:48%;height:100%;background:linear-gradient(90
