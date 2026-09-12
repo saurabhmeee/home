@@ -1,0 +1,349 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1a0a0a;font-family:system-ui,sans-serif;display:flex;justify-content:center;padding:14px;min-height:100vh}
+.ph{width:393px;background:#0a0a0a;border-radius:44px;padding:10px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.sc{background:#FFF8F0;border-radius:36px;overflow:hidden;height:800px;position:relative}
+.nt{position:absolute;top:0;left:50%;transform:translateX(-50%);width:126px;height:28px;background:#0a0a0a;border-radius:0 0 18px 18px;z-index:100}
+.sb{height:48px;padding:0 24px;display:flex;align-items:flex-end;justify-content:space-between;font-size:12px;font-weight:600;color:#333;padding-bottom:8px;z-index:50;position:relative}
+input[type=radio]{display:none}
+.pg{display:none;height:calc(100% - 48px - 56px);overflow-y:auto;scrollbar-width:none}
+.pg::-webkit-scrollbar{display:none}
+#t1:checked~.sc .p1,#t2:checked~.sc .p2,#t3:checked~.sc .p3,#t4:checked~.sc .p4,#t5:checked~.sc .p5{display:block}
+#t6:checked~.sc .p1,#t6:checked~.sc .p2,#t6:checked~.sc .p3,#t6:checked~.sc .p4,#t6:checked~.sc .p5{display:none}#t6:checked~.sc .p6{display:block}
+#t7:checked~.sc .p1,#t7:checked~.sc .p2,#t7:checked~.sc .p3,#t7:checked~.sc .p4,#t7:checked~.sc .p5{display:none}#t7:checked~.sc .p7{display:block}
+#t8:checked~.sc .p1,#t8:checked~.sc .p2,#t8:checked~.sc .p3,#t8:checked~.sc .p4,#t8:checked~.sc .p5{display:none}#t8:checked~.sc .p8{display:block}
+#t9:checked~.sc .p1,#t9:checked~.sc .p2,#t9:checked~.sc .p3,#t9:checked~.sc .p4,#t9:checked~.sc .p5{display:none}#t9:checked~.sc .p9{display:block}
+#t10:checked~.sc .p1,#t10:checked~.sc .p2,#t10:checked~.sc .p3,#t10:checked~.sc .p4,#t10:checked~.sc .p5{display:none}#t10:checked~.sc .p10{display:block}
+#t11:checked~.sc .p1,#t11:checked~.sc .p2,#t11:checked~.sc .p3,#t11:checked~.sc .p4,#t11:checked~.sc .p5{display:none}#t11:checked~.sc .p11{display:block}
+#t12:checked~.sc .p1,#t12:checked~.sc .p2,#t12:checked~.sc .p3,#t12:checked~.sc .p4,#t12:checked~.sc .p5{display:none}#t12:checked~.sc .p12{display:block}
+/* Home fab */
+.hf{position:absolute;top:52px;left:14px;z-index:95;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#800020,#B8002A);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 3px 12px rgba(128,0,32,.4);border:2px solid rgba(255,255,255,.2);transition:.2s}
+.hf:hover{transform:scale(1.1)}
+#t1:checked~.sc .hf{opacity:0;pointer-events:none}
+/* Bottom nav */
+.bn{position:absolute;bottom:0;left:0;right:0;height:56px;background:rgba(255,248,240,.97);backdrop-filter:blur(20px);display:flex;justify-content:space-around;align-items:center;border-top:1px solid #f0e0d6;z-index:90;border-radius:0 0 36px 36px}
+.bn label{display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;padding:4px 10px;border-radius:10px;transition:.2s}
+.bn label:hover{background:#FFF0E8}
+.bn .i{font-size:18px}.bn span{font-size:7px;color:#999;font-weight:600}
+#t1:checked~.sc .bn .n1,#t2:checked~.sc .bn .n2,#t3:checked~.sc .bn .n3,#t4:checked~.sc .bn .n4,#t5:checked~.sc .bn .n5{background:linear-gradient(135deg,#800020,#B8002A);border-radius:10px}
+#t1:checked~.sc .bn .n1 span,#t2:checked~.sc .bn .n2 span,#t3:checked~.sc .bn .n3 span,#t4:checked~.sc .bn .n4 span,#t5:checked~.sc .bn .n5 span{color:#fff}
+/* Shared */
+.se{font-size:15px;color:#2a0a0a;margin:10px 14px 5px;font-weight:700}
+.cd{background:#fff;border-radius:11px;margin:4px 14px;padding:9px;box-shadow:0 1px 6px rgba(128,0,32,.04);border:1px solid rgba(128,0,32,.03)}
+.bt{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:9px;font-size:10px;font-weight:600;cursor:pointer;border:none;transition:.2s;text-decoration:none}
+.bp{background:linear-gradient(135deg,#800020,#B8002A);color:#fff}.bp:hover{transform:translateY(-1px)}
+.bg{background:linear-gradient(135deg,#D4AF37,#F4CF47);color:#2a0a0a}
+.bo{border:1.5px solid #800020;color:#800020;background:transparent}
+.pulse{width:5px;height:5px;background:#15803d;border-radius:50%;animation:pu 1.5s infinite}
+@keyframes pu{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+.vd{width:9px;height:9px;border:1.5px solid #15803d;border-radius:2px;flex-shrink:0;display:flex;align-items:center;justify-content:center}.vd::after{content:'';width:4px;height:4px;border-radius:50%;background:#15803d}
+.gm{cursor:pointer;color:#800020;font-weight:600;text-decoration:underline;font-size:10px}
+/* Hero */
+.hr{background:linear-gradient(135deg,#800020,#4a0012);padding:14px 14px 18px;color:#fff;position:relative;overflow:hidden}
+.hr::after{content:'✦';position:absolute;top:4px;right:12px;font-size:40px;opacity:.08;color:#D4AF37}
+/* Event cards */
+.es{display:flex;gap:6px;padding:3px 14px;overflow-x:auto;scrollbar-width:none}.es::-webkit-scrollbar{display:none}
+.ec{min-width:125px;background:#fff;border-radius:11px;padding:9px;box-shadow:0 1px 8px rgba(128,0,32,.04);cursor:pointer;border:1px solid rgba(128,0,32,.03);display:block;color:inherit;transition:.2s}
+.ec:hover{transform:translateY(-2px)}
+/* Quick actions */
+.qa{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:0 14px}
+.qa label{background:#fff;border-radius:9px;padding:8px 2px;text-align:center;cursor:pointer;border:1px solid rgba(128,0,32,.03);display:block;transition:.2s}
+.qa label:hover{background:#FFF0E8}
+/* Timeline */
+.tl{padding:0 14px 12px;position:relative}.tl::before{content:'';position:absolute;left:30px;top:0;bottom:0;width:2px;background:linear-gradient(#D4AF37,#800020)}
+.ti{display:flex;gap:8px;margin-bottom:8px;position:relative}
+.tw{width:34px;text-align:center;font-size:7px;font-weight:700;color:#800020;padding-top:7px;flex-shrink:0}
+.to{width:8px;height:8px;border-radius:50%;background:#D4AF37;border:2px solid #fff;box-shadow:0 0 0 2px #D4AF37;flex-shrink:0;margin-top:9px;z-index:2}
+.tx{flex:1;background:#fff;border-radius:9px;padding:7px;box-shadow:0 1px 4px rgba(0,0,0,.02);border-left:3px solid #D4AF37;cursor:pointer;transition:.2s}
+.tx:hover{transform:translateX(2px)}
+/* Albums grid */
+.ag{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 14px 12px}
+.ac2{border-radius:11px;overflow:hidden;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.04)}
+.at3{height:75px;display:flex;align-items:center;justify-content:center;font-size:28px}
+/* Bingo */
+.bgg{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;padding:0 14px}
+.bc{aspect-ratio:1;background:#fff;border-radius:4px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:6.5px;padding:1px;color:#444;font-weight:500;border:1px solid #eee;cursor:pointer;line-height:1.1}
+.bm{background:linear-gradient(135deg,#800020,#B8002A);color:#fff;border-color:transparent}
+.bfr{background:linear-gradient(135deg,#D4AF37,#F4CF47);color:#2a0a0a;font-weight:700;border-color:transparent}
+/* Room cards */
+.rm{background:#fff;border-radius:9px;margin:3px 14px;padding:7px 9px;box-shadow:0 1px 3px rgba(0,0,0,.02);display:flex;align-items:center;gap:7px;border-left:3px solid #D4AF37}
+.rv{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:700;flex-shrink:0}
+/* Song rows */
+.sr{display:flex;align-items:center;gap:7px;padding:7px 14px;border-bottom:1px solid #f5f0eb;cursor:pointer;transition:.15s}
+.sr:hover{background:#FFF8F4}
+/* RSVP event card */
+.re{background:#fff;border-radius:11px;margin:4px 14px;padding:10px;box-shadow:0 1px 5px rgba(0,0,0,.03);border-left:3px solid #D4AF37}
+.rb{display:flex;gap:4px;margin-top:5px}
+.ry{padding:6px;border-radius:7px;font-size:9px;font-weight:700;cursor:pointer;border:none;background:#dcfce7;color:#15803d;flex:1;text-align:center;transition:.15s}
+.ry:hover{background:#15803d;color:#fff}
+.rn{padding:6px;border-radius:7px;font-size:9px;font-weight:700;cursor:pointer;border:none;background:#fee2e2;color:#dc2626;flex:1;text-align:center;transition:.15s}
+.rn:hover{background:#dc2626;color:#fff}
+.rma{padding:6px;border-radius:7px;font-size:9px;font-weight:700;cursor:pointer;border:none;background:#fef3c7;color:#92400e;flex:1;text-align:center;transition:.15s}
+.rma:hover{background:#f59e0b;color:#fff}
+.mp{display:flex;gap:3px;flex-wrap:wrap;margin-top:5px}
+.mo{padding:3px 8px;border-radius:12px;font-size:8px;font-weight:600;border:1px solid #eee;background:#fff;color:#555;cursor:pointer}.mo:hover{border-color:#15803d;color:#15803d}
+.ms{background:#15803d;color:#fff;border-color:#15803d}
+/* Gift items */
+.gi{display:flex;gap:8px;padding:8px 14px;border-bottom:1px solid #f5f0eb;align-items:center}
+.gp{height:3px;background:#f0e0d6;border-radius:2px;margin-top:3px;overflow:hidden}
+.gfl{height:100%;background:linear-gradient(90deg,#D4AF37,#800020);border-radius:2px}
+/* Shagun amounts */
+.sh{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:0 14px}
+.sa{padding:10px;background:#fff;border-radius:8px;text-align:center;font-weight:700;font-size:13px;color:#800020;cursor:pointer;border:2px solid #f0e0d6;transition:.15s}
+.sa:hover{border-color:#D4AF37;background:#FFFDF5;transform:translateY(-1px)}
+/* Wish cards */
+.wc{background:#fff;border-radius:10px;margin:4px 14px;padding:9px;box-shadow:0 1px 5px rgba(0,0,0,.03)}
+.wa2{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;flex-shrink:0}
+/* Menu items */
+.mi{font-size:9px;color:#555;padding:2px 0;border-bottom:1px solid #f8f4f0;display:flex;align-items:center;gap:4px}
+.sn{background:linear-gradient(135deg,#FFF8E7,#FFF0D0);border:1px solid #D4AF37;border-radius:6px;padding:5px;margin:4px 14px;font-size:8px;color:#7a6520;font-weight:500}
+/* More grid */
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:6px 14px}
+.mk{background:#fff;border-radius:11px;padding:10px;text-align:center;cursor:pointer;box-shadow:0 1px 5px rgba(0,0,0,.03);border:1px solid rgba(128,0,32,.03);transition:.2s}
+.mk:hover{transform:translateY(-2px)}
+</style>
+</head>
+<body>
+<div class="ph">
+<input type="radio" name="n" id="t1" checked><input type="radio" name="n" id="t2"><input type="radio" name="n" id="t3"><input type="radio" name="n" id="t4"><input type="radio" name="n" id="t5">
+<input type="radio" name="n" id="t6"><input type="radio" name="n" id="t7"><input type="radio" name="n" id="t8"><input type="radio" name="n" id="t9"><input type="radio" name="n" id="t10"><input type="radio" name="n" id="t11"><input type="radio" name="n" id="t12">
+
+<div class="sc">
+<div class="nt"></div>
+<div class="sb"><span>9:41</span><span>📶 🔋</span></div>
+<label for="t1" class="hf" title="Home"><span style="font-size:15px">🏠</span></label>
+
+<!-- ===== 1. HOME ===== -->
+<div class="pg p1">
+<div class="hr">
+<div style="font-size:23px;font-weight:700">Saurabh <span style="color:#D4AF37;margin:0 4px;font-size:18px">&</span> Anushika</div>
+<div style="font-size:10px;opacity:.85;margin-top:2px">December 10–11, 2026 • Jaipur</div>
+<div style="display:inline-block;margin-top:3px;background:rgba(212,175,55,.25);border:1px solid rgba(212,175,55,.3);padding:2px 9px;border-radius:10px;font-size:10px;color:#D4AF37;font-weight:600">#rabchik 💍</div>
+<div style="display:flex;gap:7px;margin-top:8px">
+<div style="background:rgba(255,255,255,.12);border-radius:7px;padding:5px 11px;text-align:center;border:1px solid rgba(255,255,255,.08)"><div style="font-size:16px;font-weight:700;color:#D4AF37">89</div><div style="font-size:6px;text-transform:uppercase;letter-spacing:1px;opacity:.8">Days</div></div>
+<div style="background:rgba(255,255,255,.12);border-radius:7px;padding:5px 11px;text-align:center;border:1px solid rgba(255,255,255,.08)"><div style="font-size:16px;font-weight:700;color:#D4AF37">14</div><div style="font-size:6px;text-transform:uppercase;letter-spacing:1px;opacity:.8">Hours</div></div>
+<div style="background:rgba(255,255,255,.12);border-radius:7px;padding:5px 11px;text-align:center;border:1px solid rgba(255,255,255,.08)"><div style="font-size:16px;font-weight:700;color:#D4AF37">27</div><div style="font-size:6px;text-transform:uppercase;letter-spacing:1px;opacity:.8">Mins</div></div>
+</div>
+</div>
+<div style="display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#D4AF37,#f0c040);color:#2a0a0a;padding:3px 8px;border-radius:10px;font-size:8px;font-weight:700;margin:6px 14px 0"><div class="pulse"></div> Happening Now: Lagan/Teeka</div>
+<div class="se">📅 Events</div>
+<div class="es">
+<label for="t6" class="ec"><div style="font-size:22px">🪔</div><div style="font-weight:700;font-size:10px">Lagan / Teeka</div><div style="font-size:8px;color:#888">Dec 10 • Morning</div><div style="font-size:7px;color:#B8002A;margin-top:2px">📍 Riddhi Resorts</div><div style="width:100%;height:3px;border-radius:2px;margin-top:4px;background:linear-gradient(90deg,#D4AF37,#f0c040)"></div></label>
+<label for="t6" class="ec"><div style="font-size:22px">🎵</div><div style="font-weight:700;font-size:10px">Sangeet</div><div style="font-size:8px;color:#888">Dec 10 • Evening</div><div style="font-size:7px;color:#B8002A;margin-top:2px">📍 Riddhi Resorts</div><div style="width:100%;height:3px;border-radius:2px;margin-top:4px;background:linear-gradient(90deg,#1a0050,#818cf8)"></div></label>
+<label for="t6" class="ec"><div style="font-size:22px">☀️</div><div style="font-weight:700;font-size:10px">Haldi</div><div style="font-size:8px;color:#888">Dec 11 • Morning</div><div style="font-size:7px;color:#B8002A;margin-top:2px">📍 Riddhi Resorts</div><div style="width:100%;height:3px;border-radius:2px;margin-top:4px;background:linear-gradient(90deg,#D4AF37,#FDE68A)"></div></label>
+<label for="t6" class="ec"><div style="font-size:22px">💍</div><div style="font-weight:700;font-size:10px">Wedding</div><div style="font-size:8px;color:#888">Dec 11 • Evening</div><div style="font-size:7px;color:#B8002A;margin-top:2px">📍 Riddhi Resorts</div><div style="width:100%;height:3px;border-radius:2px;margin-top:4px;background:linear-gradient(90deg,#800020,#D4AF37)"></div></label>
+</div>
+<div class="se">⚡ Quick Actions</div>
+<div class="qa">
+<label for="t11"><div style="font-size:16px">📩</div><span style="font-size:7px;color:#666;font-weight:600;display:block;margin-top:1px">RSVP</span></label>
+<label for="t7"><div style="font-size:16px">🍽️</div><span style="font-size:7px;color:#666;font-weight:600;display:block;margin-top:1px">Menu</span></label>
+<label for="t8"><div style="font-size:16px">🛏️</div><span style="font-size:7px;color:#666;font-weight:600;display:block;margin-top:1px">My Room</span></label>
+<label for="t12"><div style="font-size:16px">🎁</div><span style="font-size:7px;color:#666;font-weight:600;display:block;margin-top:1px">Gift</span></label>
+</div>
+<div class="se">🎉 Explore</div>
+<div class="qa">
+<label for="t9"><div style="font-size:16px">🎵</div><span style="font-size:7px;color:#666;font-weight:600;display:block;margin-top:1px">Jukebox</span></label>
+<label for="t10"><div style="font-size:16px">💌</div><span style="font-size:7px;color:#666;font-weight:600;display:block;margin-top:1px">Wishes</span></label>
+<label for="t3"><div style="font-size:16px">📸</div><span style="font-size:7px;color:#666;font-weight:600;display:block;margin-top:1px">Photos</span></label>
+<label for="t4"><div style="font-size:16px">🎮</div><span style="font-size:7px;color:#666;font-weight:600;display:block;margin-top:1px">Games</span></label>
+</div>
+<div class="cd" style="margin-top:6px">
+<div style="font-weight:700;font-size:11px;margin-bottom:3px">📍 Riddhi Resorts, Jaipur</div>
+<div style="font-size:8px;color:#666;line-height:1.4">All events at one venue! Dec 9 eve: Gulmohar Hall • Dec 10–12: Main</div>
+<div style="margin-top:5px"><a class="bt bp" style="font-size:8px;padding:6px 12px;color:#fff" href="https://www.google.com/maps/search/riddhi+resort/@51.5037737,-0.4121493,4545m/data=!3m1!1e3?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D" target="_blank">📍 Open Google Maps</a></div>
+</div>
+<div style="height:12px"></div>
+</div>
+
+<!-- ===== 2. SCHEDULE ===== -->
+<div class="pg p2">
+<div class="se" style="margin-top:4px">📅 Wedding Schedule</div>
+<div style="display:flex;gap:3px;padding:6px 14px">
+<span style="padding:5px 10px;border-radius:14px;font-size:9px;font-weight:600;background:#fff;color:#666;border:1px solid #eee">Dec 9</span>
+<span style="padding:5px 10px;border-radius:14px;font-size:9px;font-weight:600;background:linear-gradient(135deg,#800020,#B8002A);color:#fff">Dec 10</span>
+<span style="padding:5px 10px;border-radius:14px;font-size:9px;font-weight:600;background:#fff;color:#666;border:1px solid #eee">Dec 11</span>
+<span style="padding:5px 10px;border-radius:14px;font-size:9px;font-weight:600;background:#fff;color:#666;border:1px solid #eee">Dec 12</span>
+</div>
+<div class="tl">
+<div class="ti"><div class="tw">DEC 9<br>EVE</div><div class="to"></div><div class="tx"><div style="font-weight:700;font-size:10px">🏨 Guest Arrival</div><div style="font-size:8px;color:#888">Gulmohar Hall • 50 pax</div></div></div>
+<div class="ti"><div class="tw">DEC 10<br>MORN</div><div class="to" style="background:#D4AF37"></div><label for="t6" class="tx" style="border-left-color:#D4AF37"><div style="font-weight:700;font-size:10px">🪔 Lagan / Teeka</div><div style="font-size:8px;color:#888">150 pax • No dress code</div></label></div>
+<div class="ti"><div class="tw">DEC 10<br>EVE</div><div class="to" style="background:#4a0080;box-shadow:0 0 0 2px #4a0080"></div><label for="t6" class="tx" style="border-left-color:#4a0080"><div style="font-weight:700;font-size:10px">🎵 Sangeet Night</div><div style="font-size:8px;color:#888">250 pax • 👔 Western</div></label></div>
+<div class="ti"><div class="tw">DEC 11<br>MORN</div><div class="to" style="background:#F4CF47;box-shadow:0 0 0 2px #F4CF47"></div><label for="t6" class="tx" style="border-left-color:#F4CF47"><div style="font-weight:700;font-size:10px">☀️ Haldi</div><div style="font-size:8px;color:#888">250 pax • 🌺 South Indian</div></label></div>
+<div class="ti"><div class="tw">DEC 11<br>EVE</div><div class="to" style="background:#800020;box-shadow:0 0 0 2px #800020"></div><label for="t6" class="tx" style="border-left-color:#800020"><div style="font-weight:700;font-size:10px">💍 Wedding & Reception</div><div style="font-size:8px;color:#888">800 pax • 🇮🇳 Indian</div></label></div>
+<div class="ti"><div class="tw">DEC 11<br>LATE</div><div class="to"></div><div class="tx"><div style="font-weight:700;font-size:10px">🔥 Phere Night</div><div style="font-size:8px;color:#888">Maggi, Chai, Gajak, Pakode</div></div></div>
+<div class="ti"><div class="tw">DEC 12<br>MORN</div><div class="to"></div><div class="tx"><div style="font-weight:700;font-size:10px">☀️ Farewell Breakfast</div><div style="font-size:8px;color:#888">Aloo Paratha, Chai, Fruits</div></div></div>
+</div>
+</div>
+
+<!-- ===== 3. PHOTOS ===== -->
+<div class="pg p3">
+<div class="se" style="margin-top:4px">📸 Photo Albums</div>
+<div style="padding:0 14px 5px;font-size:9px;color:#888">#rabchik • Share & relive every moment</div>
+<div class="ag">
+<div class="ac2"><div class="at3" style="background:linear-gradient(135deg,#D4AF37,#FDE68A)">🪔</div><div style="padding:6px 8px;background:#fff"><div style="font-weight:700;font-size:10px">Lagan/Teeka</div><div style="font-size:8px;color:#888">Tap to upload</div></div></div>
+<div class="ac2"><div class="at3" style="background:linear-gradient(135deg,#1e3a8a,#818cf8)">🎵</div><div style="padding:6px 8px;background:#fff"><div style="font-weight:700;font-size:10px">Sangeet</div><div style="font-size:8px;color:#888">Dec 10 eve</div></div></div>
+<div class="ac2"><div class="at3" style="background:linear-gradient(135deg,#D4AF37,#fde68a)">☀️</div><div style="padding:6px 8px;background:#fff"><div style="font-weight:700;font-size:10px">Haldi</div><div style="font-size:8px;color:#888">Dec 11</div></div></div>
+<div class="ac2"><div class="at3" style="background:linear-gradient(135deg,#800020,#D4AF37)">💍</div><div style="padding:6px 8px;background:#fff"><div style="font-weight:700;font-size:10px">Wedding</div><div style="font-size:8px;color:#888">Dec 11 eve</div></div></div>
+</div>
+<div style="padding:6px 14px"><span class="bt bp" style="width:100%;text-align:center">📤 Upload Your Photos</span></div>
+<div class="cd">
+<div style="font-weight:600;font-size:10px;margin-bottom:3px">📸 Pro Photography</div>
+<div style="font-size:8px;color:#666;line-height:1.4">4K Package • Candid×2, Cinema×2, Drone, Traditional<br>Teaser + Film + 300 Candids + 2 Albums + AI Face Mapping<br>📦 Delivery: 3–3.5 months</div>
+</div>
+</div>
+
+<!-- ===== 4. GAMES ===== -->
+<div class="pg p4">
+<div class="se" style="margin-top:4px">🎮 Games & Fun</div>
+<div style="padding:0 14px 4px;font-size:9px;color:#888">Earn points → #rabchik MVP! 🏆</div>
+<div class="se" style="font-size:12px">🎯 Wedding Bingo</div>
+<div class="bgg">
+<div class="bc bm">Someone cried</div><div class="bc">Uncle dances</div><div class="bc bm">Kids stole sweets</div><div class="bc">"Shaadi kab?"</div><div class="bc">Same outfit</div>
+<div class="bc">Joota churai</div><div class="bc bm">Morni plays</div><div class="bc">Photobomb</div><div class="bc">Late arrival</div><div class="bc bm">Emot. speech</div>
+<div class="bc">Selfie w/ S&A</div><div class="bc">Aunty gossip</div><div class="bc bfr">FREE⭐</div><div class="bc">Food coma</div><div class="bc bm">"One more!"</div>
+<div class="bc">Bride cried</div><div class="bc">Baraat dance</div><div class="bc bm">Bouquet catch</div><div class="bc">DJ too loud</div><div class="bc">Baby dancing</div>
+<div class="bc">Outfit change</div><div class="bc bm">Best speech</div><div class="bc">Fireworks!</div><div class="bc">2AM Maggi</div><div class="bc bm">Vidaai tears</div>
+</div>
+<div style="padding:5px 14px"><div style="height:4px;background:#f0e0d6;border-radius:2px;overflow:hidden"><div style="width:48%;height:100%;background:linear-gradient(90deg,#D4AF37,#800020)"></div></div><div style="font-size:8px;color:#888;margin-top:1px">12/25 marked!</div></div>
+<div class="se" style="font-size:12px">🧠 Trivia: S & A</div>
+<div class="cd">
+<div style="text-align:center;font-weight:600;font-size:12px;margin-bottom:8px">Where did they first meet?</div>
+<div style="padding:6px;border:1.5px solid #eee;border-radius:7px;margin-bottom:4px;font-size:10px;cursor:pointer">🅰️ College</div>
+<div style="padding:6px;border:1.5px solid #eee;border-radius:7px;margin-bottom:4px;font-size:10px;cursor:pointer">🅱️ Through friends</div>
+<div style="padding:6px;border:1.5px solid #eee;border-radius:7px;margin-bottom:4px;font-size:10px;cursor:pointer">©️ At work</div>
+<div style="padding:6px;border:1.5px solid #eee;border-radius:7px;font-size:10px;cursor:pointer">🅳 Dating app</div>
+</div>
+<div class="se" style="font-size:12px">🏆 Leaderboard</div>
+<div class="cd">
+<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #f5f0eb;font-size:10px"><span>🥇 Shivam Gadia</span><b style="color:#D4AF37">950</b></div>
+<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #f5f0eb;font-size:10px"><span>🥈 Varshit</span><b style="color:#94a3b8">890</b></div>
+<div style="display:flex;justify-content:space-between;padding:3px 0;font-size:10px"><span>🥉 Tripti Dhaka</span><b style="color:#B8860B">820</b></div>
+</div>
+</div>
+
+<!-- ===== 5. MORE ===== -->
+<div class="pg p5">
+<div class="se" style="margin-top:4px">🎊 More</div>
+<div class="mg">
+<label for="t11" class="mk"><div style="font-size:22px">📩</div><div style="font-size:10px;font-weight:600">RSVP</div><div style="font-size:7px;color:#888">Confirm attendance</div></label>
+<label for="t8" class="mk"><div style="font-size:22px">🛏️</div><div style="font-size:10px;font-weight:600">Room Finder</div><div style="font-size:7px;color:#888">55 rooms</div></label>
+<label for="t7" class="mk"><div style="font-size:22px">🍽️</div><div style="font-size:10px;font-weight:600">Full Menu</div><div style="font-size:7px;color:#888">4 days of food</div></label>
+<label for="t9" class="mk"><div style="font-size:22px">🎵</div><div style="font-size:10px;font-weight:600">Jukebox</div><div style="font-size:7px;color:#888">Request songs</div></label>
+<label for="t10" class="mk"><div style="font-size:22px">💌</div><div style="font-size:10px;font-weight:600">Wishes</div><div style="font-size:7px;color:#888">Bless the couple</div></label>
+<label for="t12" class="mk"><div style="font-size:22px">🎁</div><div style="font-size:10px;font-weight:600">Gift & Shagun</div><div style="font-size:7px;color:#888">Send love</div></label>
+</div>
+<div class="cd">
+<div style="font-weight:600;font-size:10px;margin-bottom:3px">📍 All Events at Riddhi Resorts, Jaipur</div>
+<div style="font-size:9px;color:#666">Dec 9: Gulmohar Hall • Dec 10–12: Main Resort</div>
+<a href="https://www.google.com/maps/search/riddhi+resort/@51.5037737,-0.4121493,4545m/data=!3m1!1e3?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="gm" style="display:inline-block;margin-top:4px">📍 Open in Google Maps →</a>
+</div>
+</div>
+
+<!-- ===== 6. EVENT DETAIL ===== -->
+<div class="pg p6">
+<div style="height:120px;background:linear-gradient(135deg,#1a0050,#4a0080,#800060);display:flex;align-items:center;justify-content:center"><div style="font-size:20px;color:#fff;font-weight:700;text-shadow:0 2px 6px rgba(0,0,0,.3)">🎵 Sangeet Night</div></div>
+<div style="padding:7px 14px"><div style="font-size:7px;text-transform:uppercase;letter-spacing:1px;color:#888;font-weight:700">Date & Time</div><div style="font-size:10px;color:#333;margin-top:2px">📅 Wed, Dec 10 • Evening</div></div>
+<div style="padding:7px 14px"><div style="font-size:7px;text-transform:uppercase;letter-spacing:1px;color:#888;font-weight:700">Venue</div><div style="font-size:10px;color:#333;margin-top:2px">📍 Riddhi Resorts, Jaipur</div>
+<div style="margin-top:4px;height:60px;background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border-radius:7px;display:flex;align-items:center;justify-content:center;position:relative"><div style="width:14px;height:14px;background:#dc2626;border-radius:50% 50% 50% 0;transform:rotate(-45deg)"></div><span style="position:absolute;bottom:3px;left:5px;background:rgba(0,0,0,.6);color:#fff;padding:1px 4px;border-radius:2px;font-size:6px">Riddhi Resorts</span></div>
+<div style="display:flex;gap:4px;margin-top:5px">
+<a href="https://www.google.com/maps/search/riddhi+resort/@51.5037737,-0.4121493,4545m/data=!3m1!1e3?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="bt bp" style="flex:1;font-size:8px;padding:6px;color:#fff">📍 Google Maps</a>
+<span class="bt bo" style="flex:1;font-size:8px;padding:6px">🚕 Book Cab</span></div></div>
+<div style="padding:7px 14px"><div style="font-size:7px;text-transform:uppercase;letter-spacing:1px;color:#888;font-weight:700">Dress Code</div><div style="font-size:10px;color:#444;font-weight:600;margin-top:2px">👔 Western — party wear, suits ✨</div></div>
+<div style="padding:7px 14px"><div style="font-size:7px;text-transform:uppercase;letter-spacing:1px;color:#888;font-weight:700">What to Expect</div><div style="font-size:9px;color:#444;line-height:1.5;margin-top:2px">🎤 Dance performances & live music • 🕺 Open dance floor • 📸 AI Photo Booth • 🎵 Vote on Jukebox!</div></div>
+<div class="cd">
+<div style="font-weight:600;font-size:10px;margin-bottom:3px">📋 All Dress Codes</div>
+<div style="font-size:9px;color:#555;line-height:1.6">🪔 <b>Lagan</b> — None • 🎵 <b>Sangeet</b> — Western • ☀️ <b>Haldi</b> — South Indian • 💍 <b>Wedding</b> — Indian</div>
+</div>
+<div style="padding:7px 14px;display:flex;gap:5px">
+<label for="t11" class="bt bp" style="flex:1">RSVP Now 📩</label>
+<label for="t7" class="bt bg" style="flex:1">Full Menu 🍽️</label>
+</div>
+</div>
+
+<!-- ===== 7. MENU ===== -->
+<div class="pg p7">
+<div style="background:linear-gradient(135deg,#2a0a0a,#4a0012);padding:12px;color:#fff;text-align:center">
+<div style="font-size:16px;font-weight:700">🍽️ Wedding Menu</div>
+<div style="font-size:9px;opacity:.8;margin-top:1px">Riddhi Resorts, Jaipur</div>
+<div style="background:rgba(212,175,55,.2);border:1px solid rgba(212,175,55,.3);border-radius:6px;padding:4px;margin-top:5px;font-size:9px;color:#D4AF37">Dec 10: 150–250 pax • Dec 11: 250–800 pax 🔥</div>
+</div>
+<div class="se" style="font-size:12px">Dec 10 — Lagan & Sangeet</div>
+<div style="padding:0 14px;margin-bottom:6px"><div style="font-weight:700;font-size:10px;margin-bottom:2px">☀️ Breakfast</div>
+<div class="mi"><div class="vd"></div> Poha, Khaman, Idli Sambhar, Sandwich, Mirchi Bada</div>
+<div class="mi"><div class="vd"></div> Jalebi, Rasgulla, Kesariya Doodh</div></div>
+<div style="padding:0 14px;margin-bottom:6px"><div style="font-weight:700;font-size:10px;margin-bottom:2px">🍛 Lunch</div>
+<div class="mi"><div class="vd"></div> Paneer Lababdar, Kadhi Pakora, Dal Tadka, Matar Paneer</div>
+<div class="mi"><div class="vd"></div> Moong Dal Halwa, Raj Bhogh, Kesar Pista Ice Cream</div></div>
+<div style="padding:0 14px;margin-bottom:6px"><div style="font-weight:700;font-size:10px;margin-bottom:2px">🍿 High Tea</div>
+<div class="mi"><div class="vd"></div> Pani Puri, Laccha Tikiya, Sambhar Vada, Chole Kulche</div></div>
+<div style="padding:0 14px;margin-bottom:6px"><div style="font-weight:700;font-size:10px;margin-bottom:2px">🌙 Dinner (250 pax)</div>
+<div class="mi"><div class="vd"></div> Malai Roll, Stuff Paneer, Malai Kofta, Pindi Chana</div>
+<div class="mi"><div class="vd"></div> Matar Pulav, Dal Tadka, Butter Naan, Tandoori Roti</div></div>
+<div class="sn">🧊 Floating: Paneer 65, Spring Roll, Hara Bhara Kebab, Badam Shake!</div>
+<div class="se" style="font-size:12px">Dec 11 — Haldi & Wedding 🔥</div>
+<div style="padding:0 14px;margin-bottom:6px"><div style="font-weight:700;font-size:10px;margin-bottom:2px">☀️ Breakfast (250 pax)</div>
+<div class="mi"><div class="vd"></div> Bread Pakoda, Poha, Masala Dosa, Bedmi Puri-Aloo</div>
+<div class="mi"><div class="vd"></div> Jalebi, Kesar Doodh, Kesar Rajbhog</div></div>
+<div style="padding:0 14px;margin-bottom:6px"><div style="font-weight:700;font-size:10px;margin-bottom:2px">🍛 Lunch — Rajasthani! 🏜️</div>
+<div class="mi"><div class="vd"></div> Churma (3 types), Bajara Chakki, Bati (Sada/Alu/Mava)</div>
+<div class="mi"><div class="vd"></div> Dal, Kadhi, Gatta, Mirchi Tapore, Oreo Shake</div></div>
+<div style="padding:0 14px;margin-bottom:6px"><div style="font-weight:700;font-size:10px;margin-bottom:2px">🍿 High Tea — 14 Stalls!</div>
+<div class="mi"><div class="vd"></div> Pani Puri ×2, Pan Patta Chat, Sigadi Dosa, Delhi Khomcha</div>
+<div class="mi"><div class="vd"></div> Pasta, Tacos, Pizza, Dry Fruit Chat, Tan-Tan Kulfi</div></div>
+<div style="padding:0 14px;margin-bottom:6px"><div style="font-weight:700;font-size:10px;margin-bottom:2px">🌙 Grand Dinner (800 pax!) 🔥</div>
+<div class="mi"><div class="vd"></div> Badam Halva, Stuff Gulab Jamun, Live Kalakand, Truffle Brownie</div>
+<div class="mi"><div class="vd"></div> Paneer Lababdar, Dal Makhani, Methi Malai Matar</div>
+<div class="mi"><div class="vd"></div> Stuff Naan, Family Naan, Makka Bajra Roti</div>
+<div class="mi"><div class="vd"></div> Salads ×3, Achaar ×5, Masala Mirch</div></div>
+<div class="sn">🧊 Floating: 5 Mocktails, Pan Shake, Cheese Cigar, Dahi Kebab, Paneer 65!</div>
+<div class="sn">🔥 Phere: Live Maggi, Pakode, Chai, Gajak, Revadi, Dry Fruits</div>
+<div style="height:10px"></div>
+</div>
+
+<!-- ===== 8. ROOMS ===== -->
+<div class="pg p8">
+<div style="background:linear-gradient(135deg,#2a0a0a,#800020);padding:12px;color:#fff;text-align:center">
+<div style="font-size:16px;font-weight:700">🛏️ Room Allocations</div>
+<div style="font-size:9px;opacity:.8">Riddhi Resorts • 55 Rooms</div></div>
+<div class="se" style="font-size:12px">💗 Anushika's Side (1–35)</div>
+<div class="rm"><div class="rv" style="background:#ec4899">A</div><div><div style="font-size:10px;font-weight:600">Anushika — Rm 1</div><div style="font-size:8px;color:#888">👰 Bride</div></div></div>
+<div class="rm"><div class="rv" style="background:#f97316">M</div><div><div style="font-size:10px;font-weight:600">Mummy & Papa — Rm 2-3</div><div style="font-size:8px;color:#888">Jaipur</div></div></div>
+<div class="rm"><div class="rv" style="background:#8b5cf6">J</div><div><div style="font-size:10px;font-weight:600">Jaya Masi + 4 — Rm 7</div><div style="font-size:8px;color:#888">Nagpur</div></div></div>
+<div class="rm"><div class="rv" style="background:#06b6d4">A</div><div><div style="font-size:10px;font-weight:600">Archana Masi + 4 — Rm 9</div><div style="font-size:8px;color:#888">Hyderabad</div></div></div>
+<div class="rm"><div class="rv" style="background:#14b8a6">R</div><div><div style="font-size:10px;font-weight:600">Ritesh Mama + Family — Rm 21</div><div style="font-size:8px;color:#888">Assam</div></div></div>
+<div class="rm"><div class="rv" style="background:#10b981">T</div><div><div style="font-size:10px;font-weight:600">Tripti, Dheeraj, Kiki — Rm 27</div><div style="font-size:8px;color:#888">Jaipur</div></div></div>
+<div class="rm"><div class="rv" style="background:#6366f1">R</div><div><div style="font-size:10px;font-weight:600">Riya, Sonali, Anusha — Rm 32</div><div style="font-size:8px;color:#888">Noida / Mumbai</div></div></div>
+<div style="padding:2px 14px;font-size:8px;color:#888;font-style:italic">+ 28 more rooms on bride's side</div>
+
+<div class="se" style="font-size:12px">💙 Saurabh's Side (36–55)</div>
+<div class="rm" style="border-left-color:#2563eb"><div class="rv" style="background:#2563eb">S</div><div><div style="font-size:10px;font-weight:600">Saurabh — Rm 36</div><div style="font-size:8px;color:#888">🤵 Groom</div></div></div>
+<div class="rm" style="border-left-color:#2563eb"><div class="rv" style="background:#f97316">M</div><div><div style="font-size:10px;font-weight:600">Mummy & Papa — Rm 37-38</div><div style="font-size:8px;color:#888">Jaipur</div></div></div>
+<div class="rm" style="border-left-color:#2563eb"><div class="rv" style="background:#ec4899">E</div><div><div style="font-size:10px;font-weight:600">Ekta & Virendra Jijaji — Rm 40</div><div style="font-size:8px;color:#888">Jaipur</div></div></div>
+<div class="rm" style="border-left-color:#2563eb"><div class="rv" style="background:#14b8a6">S</div><div><div style="font-size:10px;font-weight:600">Shivam & Priyanshi — Rm 42</div><div style="font-size:8px;color:#888">Jaipur</div></div></div>
+<div class="rm" style="border-left-color:#2563eb"><div class="rv" style="background:#f59e0b">R</div><div><div style="font-size:10px;font-weight:600">Rajarshi & Tanisha — Rm 45</div><div style="font-size:8px;color:#888">US 🇺🇸</div></div></div>
+<div class="rm" style="border-left-color:#2563eb"><div class="rv" style="background:#10b981">T</div><div><div style="font-size:10px;font-weight:600">Tushar Mathur + Wife — Rm 51</div><div style="font-size:8px;color:#888">Canada 🇨🇦</div></div></div>
+<div style="padding:2px 14px;font-size:8px;color:#888;font-style:italic">+ 14 more rooms on groom's side</div>
+<div class="cd"><div style="font-size:9px;color:#555;text-align:center">🔍 Can't find your room? Ask at the resort front desk</div></div>
+<div style="height:10px"></div>
+</div>
+
+<!-- ===== 9. JUKEBOX ===== -->
+<div class="pg p9">
+<div style="background:linear-gradient(135deg,#1a0050,#2d0080);padding:14px;text-align:center;color:#fff">
+<div style="font-size:30px">🎵</div>
+<div style="font-size:16px;font-weight:700">Sangeet Jukebox</div>
+<div style="font-size:9px;opacity:.8;margin-top:2px">Vote for songs! Top picks get played 🕺💃</div></div>
+<div class="se" style="font-size:12px">🔥 Trending</div>
+<div class="sr"><b style="color:#D4AF37;width:18px;font-size:11px">1</b><div style="flex:1"><div style="font-size:10px;font-weight:600">London Thumakda</div><div style="font-size:8px;color:#888">Queen</div></div><div style="background:#f5f0eb;padding:3px 7px;border-radius:6px;font-size:9px;font-weight:700;color:#800020;cursor:pointer">▲ 42</div></div>
+<div class="sr"><b style="color:#D4AF37;width:18px;font-size:11px">2</b><div style="flex:1"><div style="font-size:10px;font-weight:600">Morni Banke</div><div style="font-size:8px;color:#888">Badhaai Ho</div></div><div style="background:#f5f0eb;padding:3px 7px;border-radius:6px;font-size:9px;font-weight:700;color:#800020;cursor:pointer">▲ 38</div></div>
+<div class="sr"><b style="color:#D4AF37;width:18px;font-size:11px">3</b><div style="flex:1"><div style="font-size:10px;font-weight:600">Gallan Goodiyaan</div><div style="font-size:8px;color:#888">Dil Dhadakne Do</div></div><div style="background:#f5f0eb;padding:3px 7px;border-radius:6px;font-size:9px;font-weight:700;color:#800020;cursor:pointer">▲ 35</div></div>
+<div class="sr"><b style="color:#D4AF37;width:18px;font-size:11px">4</b><div style="flex:1"><div style="font-size:10px;font-weight:600">Kala Chashma</div><div style="font-size:8px;color:#888">Baar Baar Dekho</div></div><div style="background:#f5f0eb;padding:3px 7px;border-radius:6px;font-size:9px;font-weight:700;color:#800020;cursor:pointer">▲ 31</div></div>
+<div class="sr"><b style="color:#D4AF37;width:18px;font-size:11px">5</b><div style="flex:1"><div style="font-size:10px;font-weight:600">Bole Chudiyan</div><div style="font-size:8px;color:#888">K3G</div></div><div style="background:#f5f0eb;padding:3px 7px;border-radius:6px;font-size:9px;font-weight:700;color:#800020;cursor:pointer">▲ 25</div></div>
+<div class="sr"><b style="color:#D4AF37;width:18px;font-size:11px">6</b><div style="flex:1"><div style="font-size:10px;font-weight:600">Desi Girl</div><div style="font-size:8px;color:#888">Dostana</div></div><div style="background:#f5f0eb;padding:3px 7px;border-radius:6px;font-size:9px;font-weight:700;color:#800020;cursor:pointer">▲ 22</div></div>
+<div class="sr"><b style="color:#D4AF37;width:18px;font-size:11px">7</b><div style="flex:1"><div style="font-size:10px;font-weight:600">Ainvayi Ainvayi</div><div style="font-size:8px;color:#888">Band Baaja Baaraat</div></div><div style="background:#f5f0eb;padding:3px 7px;border-radius:6px;font-size:9px;font-weight:700;color:#800020
